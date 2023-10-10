@@ -1,0 +1,58 @@
+body,
+input,
+select {
+  font-family: "Poppins", sans-serif;
+}
+
+.logo-heading {
+  font-family: "Oswald", sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 30px;
+}
+
+h2 {
+  font-family: "Oswald", sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04rem;
+
+}
+
+button,
+th {
+  font-family: "Oswald", sans-serif;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.03rem;
+}
+
+.nav-cust {
+    margin-bottom: -90px;
+}
+
+.bg-table {
+  background-color: #6c757da3 !important;
+}
+
+.table-data-thead {
+  top: -1px;
+  background: #6c757d;
+}
+
+#table-overflow::-webkit-scrollbar {
+  width: 8px; 
+}
+
+#table-overflow::-webkit-scrollbar-track {
+  background-color: #f1f1f1; 
+}
+
+#table-overflow::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px; 
+}
+
+#table-overflow::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
