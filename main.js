@@ -8,6 +8,7 @@ let noDataFound = document.getElementById("noDataFound");
 let tableOverflow = document.getElementById("table-overflow");
 let tableBody = document.getElementById("tableBody");
 let tableRow = document.querySelectorAll(".tableRow");
+let bgImage = document.getElementById("bgImage");
 let crimeCategoryValue = ""
 let crimeCategoryText = ""
 let forcesSelectValue = ""
@@ -25,6 +26,12 @@ fetch("https://data.police.uk/api/forces").then((res) => {
                 forcesSelect.appendChild(option)
             }
         })
+}).catch((err) => {
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "Force Data => "+err,
+    })
 })
 
 //Get Crime Category data from fetch API
@@ -38,6 +45,12 @@ fetch("https://data.police.uk/api/crime-categories").then((res) => {
                 crimeCategorySelect.appendChild(option)
             }
         })
+}).catch((err) => {
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "Crime Category => "+err,
+    })
 })
 
 //crime caterogory select
@@ -96,49 +109,61 @@ searchData.addEventListener("click", () => {
         tr.appendChild(td)
         td.appendChild(div)
 
-        fetch(`https://data.police.uk/api/crimes-no-location?category=${crimeCategoryValue}&force=${forcesSelectValue}`)
-            .then((res) => {
-                res.json()
-                    .then((response) => {
-                        console.log("current", response)
+        const crimeDetailsData = async () => {
+            try {
+                let getData = await fetch(`https://data.police.uk/api/crimes-no-location?category=${crimeCategoryValue}&force=${forcesSelectValue}`)
+                let response = await getData.json();
+                console.log("current", response)
 
-                        //Hide button loader
-                        searchBtnLoader.style.display = "none";
-                        searchData.style.display = "block";
+                //Hide button loader
+                searchBtnLoader.style.display = "none";
+                searchData.style.display = "block";
 
-                        //Hide table loader
-                        tableBody.innerHTML = "";
+                //Hide table loader
+                tableBody.innerHTML = "";
 
-                        if (response && response?.length) {
-                            //Hide button Loader
-                            searchBtnLoader.style.display = "none";
-                            searchData.style.display = "block";
+                if (response && response?.length) {
+                    //Hide button Loader
+                    searchBtnLoader.style.display = "none";
+                    searchData.style.display = "block";
 
-                            tableOverflow.style.maxHeight = "500px";
-                            for (let i = 0; i < response?.length; i++) {
-                                let tr = document.createElement("tr")
-                                let tdID = document.createElement("td")
-                                let tdCategory = document.createElement("td")
-                                let tdDate = document.createElement("td")
-                                tableBody.appendChild(tr)
-                                tr.appendChild(tdID)
-                                tr.appendChild(tdCategory)
-                                tr.appendChild(tdDate)
-                                tdID.innerHTML = `${response[i].id || "N/A"}`
-                                tdCategory.innerHTML = `${response[i].outcome_status?.category || "N/A"}`
-                                tdDate.innerHTML = `${response[i].outcome_status?.date || "N/A"}`
-                            }
-                        } else {
-                            tableOverflow.style.maxHeight = "auto";
-                            let tr = document.createElement("tr")
-                            let td = document.createElement("td")
-                            td.setAttribute("colspan", "3")
-                            td.classList.add("text-center")
-                            td.innerHTML = "No Data Found"
-                            tableBody.appendChild(tr)
-                            tr.appendChild(td)
-                        }
-                    })
-            })
+                    tableOverflow.classList.add("custMaxHeight");
+                    bgImage.classList.add("responsive-height")
+
+                    for (let i = 0; i < response?.length; i++) {
+                        let tr = document.createElement("tr")
+                        let tdID = document.createElement("td")
+                        let tdCategory = document.createElement("td")
+                        let tdDate = document.createElement("td")
+                        tableBody.appendChild(tr)
+                        tr.appendChild(tdID)
+                        tr.appendChild(tdCategory)
+                        tr.appendChild(tdDate)
+                        tdID.innerHTML = `${response[i].id || "N/A"}`
+                        tdCategory.innerHTML = `${response[i].outcome_status?.category || "N/A"}`
+                        tdDate.innerHTML = `${response[i].outcome_status?.date || "N/A"}`
+                    }
+                } else {
+                    tableOverflow.classList.remove("custMaxHeight")
+                    bgImage.classList.remove("responsive-height")
+                    let tr = document.createElement("tr")
+                    let td = document.createElement("td")
+                    td.setAttribute("colspan", "3")
+                    td.classList.add("text-center")
+                    td.innerHTML = "No Data Found"
+                    tableBody.appendChild(tr)
+                    tr.appendChild(td)
+                }
+
+            } catch (err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: "Crime Details Data => "+err,
+                })
+            }
+
+        }
+        crimeDetailsData();
     }
 })
